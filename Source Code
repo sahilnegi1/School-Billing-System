@@ -1,0 +1,505 @@
+CPP PROGRAM
+
+#include <iostream>
+#include <fstream>
+#include <conio.h>
+#include <stdlib.h>
+#include <bits/stdc++.h>
+#include <stdio.h>
+#include <windows.h>
+using namespace std;
+int temp = 0,pos=0;
+int accounttype();
+void student();
+void teacherandstaff();
+struct date
+{
+    int dd, mm, yy;
+};
+ofstream fout;
+ifstream fin;
+
+class detail
+{
+    int cl, rollno;
+    char name[50];
+    date d;
+    int total, paid, dues, advance;
+
+public:
+    void add();
+    void feedetail();
+    void getdetail();
+    int retno();
+
+} s;
+void detail::add()
+{
+    cout << "enter name =";
+    cin >> name;
+    cout << "enter roll no. = ";
+    cin >> rollno;
+    cout << "enter class =";
+    cin >> cl;
+    cout << "enter date (dd/mm/yy) = ";
+    cin >> d.dd >> d.mm >> d.yy;
+    cout << "how much fees is paid =";
+    cin >> paid;
+    cout << "how much advance money is submitted =";
+    cin >> advance;
+    feedetail();
+    fout.write((char *)&s, sizeof(s));
+    fout.close();
+}
+void detail::feedetail()
+{
+    total = 10000;
+    dues = total - paid;
+}
+int detail::retno()
+{
+    return (rollno);
+}
+void detail::getdetail()
+{
+    fin.open("sturegister.dat", ios::binary);
+    fin.read((char *)&s, sizeof(s));
+    cout << " name =" << name;
+    cout << "\n roll no. = " << rollno;
+    cout << "\n class =" << cl;
+    cout << "\n date (dd/mm/yy) = " << d.dd << d.mm << d.yy;
+    cout << "\n total =" << total;
+    cout << "\n paid =" << paid;
+    cout << "\n dues =" << dues;
+    cout << "\n advance =" << advance;
+    fin.close();
+}
+
+class teacherdetail
+{int id,salary,adva;
+ date da;
+char name[50];
+ public:void teadd();
+        void disp();
+        int retn();
+
+}t;
+void teacherdetail::teadd()
+{cout<<"enter name =";
+ cin>>name;
+ cout<<"enter id = ";
+ cin>>id;
+ cout<<"enter date(dd/mm/yy) = ";
+ cin>>da.dd>>da.mm>>da.yy;
+ cout<<"Enter salary = ";
+ cin>>salary;
+ cout<<"enter advance =";
+ cin>>adva;
+ fout.write((char*)&t,sizeof(t));
+ fout.close();
+}
+void teacherdetail::disp()
+{fin.open("teachregister.dat", ios::in|ios::binary );
+    fin.read((char*)&t,sizeof(t));
+    cout<<"enter name ="<<name;
+ cout<<"\n enter id = "<<id;
+ cout<<"\n enter date(dd/mm/yy) = "<<da.dd<<da.mm<<da.yy;
+ cout<<"\n Enter salary = "<<salary;
+ cout<<"\n enter advance ="<<adva;
+ fin.close();
+}
+int teacherdetail::retn()
+{
+    return(id);
+}
+void exit();
+int main()
+{
+    cout << "\t ***** school billing system *****";
+    cout << "\n  \t    developed by *sahil Negi*";
+    cout << "\n \n \t ***** press enter to continue ***** ";
+    getch();
+    accounttype();
+    return 0;
+}
+int accounttype()
+{
+
+    system("cls");
+    int ch;
+    cout << "\n ----- Enter account type-----";
+    cout << "\n 1. student";
+    cout << "\n 2. teacher or staff";
+    cout << "\n 3. exit";
+    cout << "\n enter your choice =";
+    cin >> ch;
+    switch (ch)
+    {
+    case 1:
+        student();
+        break;
+    case 2:
+        teacherandstaff();
+        break;
+    case 3:
+        exit();
+        break;
+    default:
+        cout << "!wrong input";
+        break;
+    }
+    return 0;
+}
+void student()
+      {
+         h:
+            system("cls");
+            int a;
+            char chise;
+            cout << "\n ----- *Student Record -----";
+            cout << "\n 1. Add ";
+            cout << "\n 2. modify";
+            cout << "\n 3. delete";
+            cout << "\n 4. get details";
+            cout << "\n 5. back to main menu";
+            cout << "\n 6. Exit";
+            cout << "\n enter your choice =";
+            cin >> a;
+            switch (a)
+            {
+            case 1:
+                fout.open("sturegister.dat", ios::binary | ios::app);
+                s.add();
+                cout << "Added successfully!";
+                getch();
+                goto h;
+
+            case 2:
+                system("cls");
+                temp = 0;
+                int ed;
+                cout << "\n\n\t\tEnter roll number to update details =";
+                cin >> ed;
+                fin.open("sturegister.dat", ios::in | ios::binary);
+                fout.open("tmp.dat", ios::out | ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    getch();
+                    goto h;
+                }
+
+                while (fin.read((char *)&s, sizeof(s)))
+                {
+                    int x = s.retno();
+                    if (fin)
+                    {
+                        if (x == ed)
+                            temp = 1;
+                        else
+                        {
+                            fout.write((char *)&s, sizeof(s));
+                        }
+                    }
+                }
+                fin.close();
+                fout.close();
+                remove("sturegister.dat");
+                rename("tmp.dat", "sturegister.dat");
+
+                if (temp == 1)
+                {
+                    cout << "\n\t\t fill details correctly \n";
+                    fout.open("sturegister.dat", ios::binary | ios::app);
+                    s.add();
+                    cout << "Added successfully!";
+                    getch();
+                    goto h;
+                }
+                else if (temp == 0)
+                    cout << "\n\t\tItem does not Exist! Please Retry";
+                getch();
+                goto h;
+            case 3:
+                system("cls");
+                temp = 0;
+                int dno;
+                cout << "\n\n\t\tEnter roll number =";
+                cin >> dno;
+                fin.open("sturegister.dat", ios::in | ios::binary);
+                fout.open("tmp.dat", ios::out | ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    getch();
+                    goto h;
+                }
+
+                while (fin.read((char *)&s, sizeof(s)))
+                {
+                    int x = s.retno();
+                    if (fin)
+                    {
+                        if (x == dno)
+                            temp = 1;
+                        else
+                        {
+                            fout.write((char *)&s, sizeof(s));
+                        }
+                    }
+                }
+                fin.close();
+                fout.close();
+                remove("sturegister.dat");
+                rename("tmp.dat", "sturegister.dat");
+
+                if (temp == 1)
+                {
+                    cout << "\n\t\tItem Succesfully Deleted";
+                    getch();
+                    goto h;
+                }
+                else if (temp == 0)
+                    cout << "\n\t\tItem does not Exist! Please Retry";
+                getch();
+                goto h;
+
+            case 4:
+                system("cls");
+                temp = 0;
+                int rno;
+                cout << "\n\n\t\tEnter roll number =";
+                cin >> rno;
+                fin.open("sturegister.dat", ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    goto h;
+                }
+                fin.seekg(0);
+                while (fin.read((char *)&s, sizeof(s)))
+                {
+                    int x = s.retno();
+                    if (x == rno)
+                    {
+                        s.getdetail();
+                        temp = 1;
+                        break;
+                    }
+                }
+                if (temp == 0)
+                    cout << "\n\t\tItem does not exist....Please Retry!";
+                getch();
+                fin.close();
+
+                goto h;
+
+            case 5:
+            accounttype();
+                
+
+            case 6:
+                cout << "Are you sure you want to exit(y/n)=";
+                cin >> chise;
+                if (chise == 'y' || chise == 'Y')
+                {
+                    exit();
+                }
+                else if(chise == 'n' || chise == 'N')
+                {
+                    goto h;
+                }
+                break;
+            default:
+                cout << "wrong input!";
+                break;
+            }
+        }
+void teacherandstaff()
+{
+    h:
+            system("cls");
+            int a;
+            char chise;
+            cout << "\n ----- *teacher and *staff Record -----";
+            cout << "\n 1. Add ";
+            cout << "\n 2. modify";
+            cout << "\n 3. delete";
+            cout << "\n 4. get details";
+            cout << "\n 5. back to main menu";
+            cout << "\n 6. Exit";
+            cout << "\n enter your choice =";
+            cin >> a;
+            switch (a)
+            {
+            case 1:
+                fout.open("teachregister.dat", ios::binary | ios::app);
+                t.teadd();
+                cout << "Added successfully!";
+                getch();
+                goto h;
+
+            case 2:
+                system("cls");
+                temp = 0;
+                int ed1;
+                cout << "\n\n\t\tEnter roll number to update details =";
+                cin >> ed1;
+                fin.open("teachregister.dat", ios::in | ios::binary);
+                fout.open("tmp1.dat", ios::out | ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    getch();
+                    goto h;
+                }
+
+                while (fin.read((char *)&t, sizeof(t)))
+                {
+                    int x = t.retn();
+                    if (fin)
+                    {
+                        if (x == ed1)
+                            temp = 1;
+                        else
+                        {
+                            fout.write((char *)&t, sizeof(t));
+                        }
+                    }
+                }
+                fin.close();
+                fout.close();
+                remove("teachregister.dat");
+                rename("tmp1.dat", "teachregister.dat");
+
+                if (temp == 1)
+                {
+                    cout << "\n\t\t update the details \n";
+                    fout.open("teachregister.dat", ios::binary | ios::app);
+                t.teadd();
+                cout << "Added successfully!";
+                getch();
+                goto h;
+                    getch();
+                    goto h;
+                }
+                else if (temp == 0)
+                    cout << "\n\t\tItem does not Exist! Please Retry";
+                getch();
+                goto h;
+
+            case 3:
+                system("cls");
+                temp = 0;
+                int dno;
+                cout << "\n\n\t\tEnter roll number =";
+                cin >> dno;
+                fin.open("teachregister.dat", ios::in | ios::binary);
+                fout.open("tmp1.dat", ios::out | ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    getch();
+                    goto h;
+                }
+
+                while (fin.read((char *)&t, sizeof(t)))
+                {
+                    int x = t.retn();
+                    if (fin)
+                    {
+                        if (x == dno)
+                            temp = 1;
+                        else
+                        {
+                            fout.write((char *)&t, sizeof(t));
+                        }
+                    }
+                }
+                fin.close();
+                fout.close();
+                remove("teachregister.dat");
+                rename("tmp1.dat", "teachregister.dat");
+
+                if (temp == 1)
+                {
+                    cout << "\n\t\tItem Succesfully Deleted";
+                    getch();
+                    goto h;
+                }
+                else if (temp == 0)
+                    cout << "\n\t\tItem does not Exist! Please Retry";
+                getch();
+                goto h;
+
+            case 4:
+                system("cls");
+                temp = 0;
+                int rno;
+                cout << "\n\n\t\tEnter roll number =";
+                cin >> rno;
+                fin.open("teachregister.dat", ios::binary);
+                if (!fin)
+                {
+                    cout << "\n\nFile Not Found...\nProgram Terminated!";
+                    goto h;
+                }
+                fin.seekg(0);
+                while (fin.read((char *)&t, sizeof(t)))
+                {
+                    int x = t.retn();
+                    if (x == rno)
+                    {
+                        t.disp();
+                        temp = 1;
+                        break;
+                    }
+                }
+                if (temp == 0)
+                    cout << "\n\t\tItem does not exist....Please Retry!";
+                getch();
+                fin.close();
+
+                goto h;
+
+            case 5:
+            accounttype();
+                
+
+            case 6:
+                cout << "Are you sure you want to exit(y/n)=";
+                cin >> chise;
+                if (chise == 'y' || chise == 'Y')
+                {
+                    exit();
+                }
+                else if(chise == 'n' || chise == 'N')
+                {
+                    goto h;
+                }
+                break;
+            default:
+                cout << "wrong input!";
+                break;
+            }
+}
+
+void exit()
+{
+    cout << "Exiting";
+    Sleep(500);
+    cout << ".";
+    Sleep(1000);
+    cout << ".";
+    Sleep(1000);
+    cout << ".";
+    Sleep(1000);
+
+    Sleep(1200);
+    system("cls");
+    cout << "\n \n \n";
+    cout << " THANK YOU for using school billing sytem...";
+    cout << "\n \n \n";
+    exit(0);
+}
+
